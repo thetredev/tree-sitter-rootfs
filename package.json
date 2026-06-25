@@ -1,0 +1,14 @@
+{
+  "name": "tree-sitter-rootfs",
+  "version": "0.1.0",
+  "description": "Tree-sitter grammar for the rootfs-spawn provisioning DSL (.rootfs files)",
+  "main": "bindings/node",
+  "keywords": [
+    "tree-sitter",
+    "rootfs"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "tree-sitter-cli": "^0.24.6"
+  }
+}
