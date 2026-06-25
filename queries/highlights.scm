@@ -4,7 +4,7 @@
 
 "=" @operator
 
-["[" "]" "{"] @punctuation.bracket
+["[" "]" "{" "$("] @punctuation.bracket
 
 (comment) @comment
 

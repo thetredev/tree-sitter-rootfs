@@ -32,12 +32,12 @@ module.exports = grammar({
 
     list: ($) => seq("[", repeat($.bare_string), "]"),
 
-    // name = { ...shell lines... }
+    // name = { ...lines... } | name = $( ...shell lines... )
     block_def: ($) =>
       seq(
         field("name", $.identifier),
         "=",
-        "{",
+        choice("{", "$("),
         repeat($.block_content_line),
         $._block_end,
       ),

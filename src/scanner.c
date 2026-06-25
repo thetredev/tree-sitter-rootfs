@@ -23,9 +23,10 @@ static bool is_eol(TSLexer *lexer) {
   return lexer->lookahead == 0 || lexer->lookahead == '\n' || lexer->lookahead == '\r';
 }
 
-// Decide, for the current line, whether it is a lone "}" (the block
-// terminator) or arbitrary shell content. A line counts as the terminator
-// only if, once leading/trailing whitespace is stripped, it is exactly "}".
+// Decide, for the current line, whether it is a lone block terminator
+// ("}" for { ... } blocks, ")" for $( ... ) blocks) or arbitrary shell
+// content. A line counts as a terminator only if, once leading/trailing
+// whitespace is stripped, it is exactly that single character.
 bool tree_sitter_rootfs_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
   (void)payload;
 
@@ -45,7 +46,7 @@ bool tree_sitter_rootfs_external_scanner_scan(void *payload, TSLexer *lexer, con
     return false;
   }
 
-  if (lexer->lookahead == '}' && valid_symbols[BLOCK_END]) {
+  if ((lexer->lookahead == '}' || lexer->lookahead == ')') && valid_symbols[BLOCK_END]) {
     lexer->advance(lexer, false);
     lexer->mark_end(lexer);
 
@@ -57,8 +58,8 @@ bool tree_sitter_rootfs_external_scanner_scan(void *payload, TSLexer *lexer, con
       lexer->result_symbol = BLOCK_END;
       return true;
     }
-    // '}' wasn't alone on the line; fall through and treat the whole
-    // line (including the '}' already consumed) as content.
+    // The delimiter wasn't alone on the line; fall through and treat the
+    // whole line (including the character already consumed) as content.
   }
 
   if (!valid_symbols[BLOCK_CONTENT_LINE]) {
